@@ -174,6 +174,12 @@
             box-shadow: 0 0 20px rgba(157, 78, 221, 0.5);
         }
 
+        .roulette-item.masterball {
+            background: linear-gradient(135deg, #ff595e 0%, #ff9f1c 100%);
+            border-color: #ff9f1c;
+            box-shadow: 0 0 20px rgba(255, 159, 28, 0.5);
+        }
+
         .roulette-item img {
             width: 64px;
             height: 64px;
@@ -196,7 +202,8 @@
         }
 
         .roulette-item.netherstar .roulette-item-name,
-        .roulette-item.ender .roulette-item-name {
+        .roulette-item.ender .roulette-item-name,
+        .roulette-item.masterball .roulette-item-name {
             color: white;
             text-shadow: 0 0 5px rgba(157, 78, 221, 0.8);
         }
@@ -268,6 +275,21 @@
             font-weight: bold;
             margin: 10px 0;
             color: #98c1d9;
+        }
+
+        .trade-info {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(26, 31, 46, 0.8);
+            border-radius: 10px;
+            border: 1px solid #3d5a80;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .trade-info h4 {
+            color: #98c1d9;
+            margin-bottom: 8px;
         }
 
         /* Login Form Styles */
@@ -466,6 +488,11 @@
             border-color: #9d4edd;
         }
 
+        .result-popup.masterball {
+            background: linear-gradient(135deg, #ff595e 0%, #ff9f1c 100%);
+            border-color: #ff9f1c;
+        }
+
         @keyframes popupAppear {
             from {
                 transform: translate(-50%, -50%) scale(0.5);
@@ -485,7 +512,8 @@
 
         .result-popup.shiny h2,
         .result-popup.netherstar h2,
-        .result-popup.ender h2 {
+        .result-popup.ender h2,
+        .result-popup.masterball h2 {
             color: white;
         }
 
@@ -506,9 +534,17 @@
             color: #98c1d9;
         }
 
+        .pokemon-level {
+            font-size: 1.1em;
+            color: #98c1d9;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
         .result-popup.shiny .result-pokemon-name,
         .result-popup.netherstar .result-pokemon-name,
-        .result-popup.ender .result-pokemon-name {
+        .result-popup.ender .result-pokemon-name,
+        .result-popup.masterball .result-pokemon-name {
             color: white;
         }
 
@@ -540,6 +576,18 @@
             display: inline-block;
             background: white;
             color: #7209b7;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 700;
+            margin-top: 10px;
+            animation: shimmer 2s infinite;
+        }
+
+        .result-masterball-badge {
+            display: inline-block;
+            background: white;
+            color: #ff595e;
             padding: 5px 15px;
             border-radius: 20px;
             font-size: 0.9em;
@@ -627,14 +675,14 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎰 Cobblemon Lucky Wheel</h1>
-            <p>Trade a Masterball for a Legendary Token and spin!</p>
+            <h1>Cobblemon Lucky Wheel</h1>
+            <p>Trade for a Token and spin!</p>
         </div>
 
         <div class="main-content">
             <div class="wheel-section">
                 <div class="wheel-type-selector">
-                    <button class="wheel-type-btn" onclick="switchWheel('daily')">Daily Spin</button>
+                    <button class="wheel-type-btn" onclick="switchWheel('hourly')">Hourly Spin</button>
                     <button class="wheel-type-btn active" onclick="switchWheel('normal')">Normal Legendaries</button>
                     <button class="wheel-type-btn" onclick="switchWheel('event')">Event Legendaries</button>
                 </div>
@@ -677,6 +725,12 @@
                         
                         <button class="logout-button" onclick="logout()">Logout</button>
                         <button class="refresh-button" onclick="loadTokenData()">🔄 Refresh Tokens</button>
+                        
+                        <div class="trade-info">
+                            <h4>💎 How to Get Tokens:</h4>
+                            <p><strong>Normal Token:</strong> Trade 5 Shinies (any kind)</p>
+                            <p><strong>Event Token:</strong> Trade 1x Masterball</p>
+                        </div>
                     </div>
                 </div>
 
@@ -697,27 +751,33 @@
         <div class="result-pokemon">
             <img id="resultSprite" src="" alt="Prize">
             <div class="result-pokemon-name" id="resultName"></div>
+            <div class="pokemon-level" id="resultLevel"></div>
             <div id="shinyBadge" style="display: none;" class="result-shiny-badge">✨ SHINY ✨</div>
             <div id="netherstarBadge" style="display: none;" class="result-netherstar-badge">🌟 NETHER STAR 🌟</div>
             <div id="enderBadge" style="display: none;" class="result-ender-badge">👁️ EYES OF ENDER 👁️</div>
+            <div id="masterballBadge" style="display: none;" class="result-masterball-badge">🎾 MASTERBALL 🎾</div>
         </div>
         <button class="close-popup" onclick="closePopup()">Close</button>
     </div>
 
     <script>
-        // Daily Spin Minecraft Items
-        const dailyItems = [
-            { name: 'Nether Star', id: 'nether_star', count: 1, type: 'netherstar', rarity: 'legendary' },
-            { name: 'Eyes of Ender', id: 'ender_eye', count: 8, type: 'ender', rarity: 'rare' },
-            { name: 'Diamond', id: 'diamond', count: 10, type: 'rare' },
-            { name: 'Netherite Scrap', id: 'netherite_scrap', count: 3, type: 'rare' },
-            { name: 'Iron Ingot', id: 'iron_ingot', count: 32, type: 'common' },
-            { name: 'Gold Ingot', id: 'gold_ingot', count: 32, type: 'common' },
-            { name: 'Emerald', id: 'emerald', count: 16, type: 'common' },
-            { name: 'Lapis Lazuli', id: 'lapis_lazuli', count: 32, type: 'common' },
-            { name: 'Redstone', id: 'redstone', count: 32, type: 'common' },
-            { name: 'Coal', id: 'coal', count: 64, type: 'common' },
-            { name: 'Experience Bottle', id: 'experience_bottle', count: 16, type: 'common' }
+        // Hourly Spin Items (with proper Pokéball sprites)
+        const hourlyItems = [
+            { name: 'Nether Star', id: 'nether_star', count: 1, type: 'netherstar', rarity: 'legendary', isMinecraft: true },
+            { name: 'Eyes of Ender', id: 'ender_eye', count: 8, type: 'ender', rarity: 'rare', isMinecraft: true },
+            { name: 'Masterball', id: 'masterball', count: 1, type: 'masterball', rarity: 'legendary', sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png' },
+            { name: 'Diamond', id: 'diamond', count: 10, type: 'rare', isMinecraft: true },
+            { name: 'Netherite Scrap', id: 'netherite_scrap', count: 3, type: 'rare', isMinecraft: true },
+            { name: 'Ultra Ball', id: 'ultra_ball', count: 64, type: 'pokeball', rarity: 'uncommon', sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/ultra-ball.png' },
+            { name: 'Great Ball', id: 'great_ball', count: 32, type: 'pokeball', rarity: 'uncommon', sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/great-ball.png' },
+            { name: 'Quick Ball', id: 'quick_ball', count: 32, type: 'pokeball', rarity: 'uncommon', sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/quick-ball.png' },
+            { name: 'Poke Ball', id: 'poke_ball', count: 64, type: 'pokeball', rarity: 'common', sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png' },
+            { name: 'Iron Ingot', id: 'iron_ingot', count: 32, type: 'common', isMinecraft: true },
+            { name: 'Gold Ingot', id: 'gold_ingot', count: 32, type: 'common', isMinecraft: true },
+            { name: 'Emerald', id: 'emerald', count: 16, type: 'common', isMinecraft: true },
+            { name: 'Lapis Lazuli', id: 'lapis_lazuli', count: 32, type: 'common', isMinecraft: true },
+            { name: 'Redstone', id: 'redstone', count: 32, type: 'common', isMinecraft: true },
+            { name: 'Experience Bottle', id: 'experience_bottle', count: 16, type: 'common', isMinecraft: true }
         ];
 
         // Pokemon lists
@@ -753,8 +813,8 @@
             { name: 'Latios', id: 381, shiny: false }
         ];
 
-        // Additional Pokemon for daily spin (non-shiny only)
-        const dailyPokemon = [
+        // Additional Pokemon for hourly spin (non-shiny only)
+        const hourlyPokemon = [
             { name: 'Growlithe', id: 58, shiny: false },
             { name: 'Machop', id: 66, shiny: false },
             { name: 'Dratini', id: 147, shiny: false },
@@ -768,6 +828,7 @@
         let selectedPlayer = '';
         const SHINY_CHANCE = 0.01;
         const SHINY_ONLY_CHANCE = 0.10; // 10% chance for shiny-only Pokemon in normal wheel
+        const MASTERBALL_CHANCE = 0.01; // Same as Nether Star rarity
         let rouletteItems = [];
 
         // Load saved login from localStorage
@@ -861,6 +922,20 @@
             return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
         }
 
+        // Get Pokemon level based on wheel type and shiny status
+        function getPokemonLevel(wheelType, isShiny = false) {
+            switch(wheelType) {
+                case 'hourly':
+                    return 1;
+                case 'normal':
+                    return isShiny ? 45 : 50;
+                case 'event':
+                    return 70;
+                default:
+                    return 50;
+            }
+        }
+
         // Load spins history from localStorage
         function loadSpinsHistory() {
             const history = localStorage.getItem('wheel_spins_history');
@@ -882,19 +957,19 @@
             return Math.max(0, availableTokens - usedSpins);
         }
 
-        // Check if daily spin is available
-        function canSpinDaily(player) {
+        // Check if hourly spin is available
+        function canSpinHourly(player) {
             const history = loadSpinsHistory();
-            const lastDailySpin = history[player + '_daily_timestamp'];
+            const lastHourlySpin = history[player + '_hourly_timestamp'];
             
-            if (!lastDailySpin) return true;
+            if (!lastHourlySpin) return true;
             
-            const lastSpinDate = new Date(lastDailySpin);
+            const lastSpinDate = new Date(lastHourlySpin);
             const now = new Date();
             
-            // Check if 24 hours have passed
+            // Check if 1 hour has passed
             const hoursSinceLastSpin = (now - lastSpinDate) / (1000 * 60 * 60);
-            return hoursSinceLastSpin >= 24;
+            return hoursSinceLastSpin >= 1;
         }
 
         function createRoulette() {
@@ -903,8 +978,8 @@
             rouletteItems = [];
             
             let items;
-            if (currentWheel === 'daily') {
-                items = dailyItems;
+            if (currentWheel === 'hourly') {
+                items = hourlyItems;
             } else if (currentWheel === 'normal') {
                 items = normalLegendaries;
             } else {
@@ -915,18 +990,19 @@
             for (let i = 0; i < 60; i++) {
                 let item;
                 
-                if (currentWheel === 'daily') {
-                    // For daily spin, include both Minecraft items and Pokemon
-                    const allDailyItems = [...dailyItems, ...dailyPokemon];
-                    item = allDailyItems[Math.floor(Math.random() * allDailyItems.length)];
+                if (currentWheel === 'hourly') {
+                    // For hourly spin, include both Minecraft items and Pokemon
+                    const allHourlyItems = [...hourlyItems, ...hourlyPokemon];
+                    item = allHourlyItems[Math.floor(Math.random() * allHourlyItems.length)];
                     
                     const isNetherstar = item.type === 'netherstar';
                     const isEnder = item.type === 'ender';
+                    const isMasterball = item.type === 'masterball';
                     
                     rouletteItems.push({
                         ...item,
                         isShiny: false,
-                        type: isNetherstar ? 'netherstar' : (isEnder ? 'ender' : 'normal'),
+                        type: isNetherstar ? 'netherstar' : (isEnder ? 'ender' : (isMasterball ? 'masterball' : 'normal')),
                         isPokemon: item.id <= 1000 // Assuming Pokemon IDs are less than 1000
                     });
                     
@@ -935,6 +1011,8 @@
                         div.className = 'roulette-item netherstar';
                     } else if (isEnder) {
                         div.className = 'roulette-item ender';
+                    } else if (isMasterball) {
+                        div.className = 'roulette-item masterball';
                     } else {
                         div.className = 'roulette-item';
                     }
@@ -943,10 +1021,12 @@
                         div.innerHTML = `
                             <img src="${getSprite(item.id, false)}" alt="${item.name}">
                             <div class="roulette-item-name">${item.name}</div>
+                            <div class="item-count">Lvl 1</div>
                         `;
-                    } else { // It's a Minecraft item
+                    } else { // It's a Minecraft item or Pokéball
+                        const spriteUrl = item.sprite || getMinecraftSprite(item.id);
                         div.innerHTML = `
-                            <img src="${getMinecraftSprite(item.id)}" alt="${item.name}">
+                            <img src="${spriteUrl}" alt="${item.name}">
                             <div class="roulette-item-name">${item.name}</div>
                             <div class="item-count">${item.count}x</div>
                         `;
@@ -966,9 +1046,12 @@
                         isShiny = true;
                     }
                     
+                    const level = getPokemonLevel(currentWheel, isShiny);
+                    
                     rouletteItems.push({
                         pokemon: item,
                         isShiny: isShiny,
+                        level: level,
                         rarity: item.rarity || 'legendary'
                     });
                     
@@ -977,6 +1060,7 @@
                     div.innerHTML = `
                         <img src="${getSprite(item.id, isShiny)}" alt="${item.name}">
                         <div class="roulette-item-name">${item.name}</div>
+                        <div class="item-count">Lvl ${level}</div>
                         ${isShiny ? '<div class="shiny-badge">SHINY</div>' : ''}
                     `;
                     track.appendChild(div);
@@ -992,29 +1076,34 @@
             const title = document.getElementById('listTitle');
             const shinyInfo = document.getElementById('shinyInfo');
             
-            if (currentWheel === 'daily') {
-                title.textContent = 'Daily Spin Rewards';
+            if (currentWheel === 'hourly') {
+                title.textContent = 'Hourly Spin Rewards';
                 shinyInfo.style.display = 'none';
                 list.innerHTML = '';
                 
                 // Show Minecraft items
-                dailyItems.forEach(item => {
+                hourlyItems.forEach(item => {
                     const listItem = document.createElement('div');
                     listItem.className = 'pokemon-item';
+                    if (item.type === 'masterball') {
+                        listItem.style.background = 'linear-gradient(135deg, rgba(255,89,94,0.2) 0%, rgba(255,159,28,0.2) 100%)';
+                        listItem.style.borderColor = '#ff9f1c';
+                    }
+                    const spriteUrl = item.sprite || getMinecraftSprite(item.id);
                     listItem.innerHTML = `
-                        <img class="pokemon-sprite" src="${getMinecraftSprite(item.id)}" alt="${item.name}">
+                        <img class="pokemon-sprite" src="${spriteUrl}" alt="${item.name}">
                         <span>${item.name} (${item.count}x)</span>
                     `;
                     list.appendChild(listItem);
                 });
                 
                 // Show Pokemon
-                dailyPokemon.forEach(pokemon => {
+                hourlyPokemon.forEach(pokemon => {
                     const item = document.createElement('div');
                     item.className = 'pokemon-item';
                     item.innerHTML = `
                         <img class="pokemon-sprite" src="${getSprite(pokemon.id)}" alt="${pokemon.name}">
-                        <span>${pokemon.name}</span>
+                        <span>${pokemon.name} (Lvl 1)</span>
                     `;
                     list.appendChild(item);
                 });
@@ -1024,16 +1113,20 @@
                 shinyInfo.style.display = 'block';
                 list.innerHTML = '';
                 
+                const level = currentWheel === 'normal' ? 50 : 70;
+                const shinyLevel = currentWheel === 'normal' ? 45 : 70;
+                
                 legendaries.forEach(pokemon => {
                     const item = document.createElement('div');
                     item.className = 'pokemon-item';
                     
                     // Check if this Pokemon is shiny-only
                     const isShinyOnly = pokemon.shiny === true;
+                    const itemLevel = isShinyOnly ? shinyLevel : level;
                     
                     item.innerHTML = `
                         <img class="pokemon-sprite" src="${getSprite(pokemon.id, isShinyOnly)}" alt="${pokemon.name}">
-                        <span>${pokemon.name}${isShinyOnly ? ' (Shiny)' : ''}</span>
+                        <span>${pokemon.name}${isShinyOnly ? ' (Shiny)' : ''} (Lvl ${itemLevel})</span>
                     `;
                     list.appendChild(item);
                 });
@@ -1050,7 +1143,7 @@
             });
             
             const buttons = document.querySelectorAll('.wheel-type-btn');
-            if (type === 'daily') {
+            if (type === 'hourly') {
                 buttons[0].classList.add('active');
             } else if (type === 'normal') {
                 buttons[1].classList.add('active');
@@ -1136,14 +1229,14 @@
                 return;
             }
             
-            // Check for daily spin
-            if (currentWheel === 'daily') {
-                if (!canSpinDaily(selectedPlayer)) {
+            // Check for hourly spin
+            if (currentWheel === 'hourly') {
+                if (!canSpinHourly(selectedPlayer)) {
                     const history = loadSpinsHistory();
-                    const lastSpin = new Date(history[selectedPlayer + '_daily_timestamp']);
-                    const nextSpin = new Date(lastSpin.getTime() + (24 * 60 * 60 * 1000));
-                    const hoursLeft = Math.ceil((nextSpin - new Date()) / (1000 * 60 * 60));
-                    alert(`Daily spin not available yet! Come back in ${hoursLeft} hours.`);
+                    const lastSpin = new Date(history[selectedPlayer + '_hourly_timestamp']);
+                    const nextSpin = new Date(lastSpin.getTime() + (60 * 60 * 1000));
+                    const minutesLeft = Math.ceil((nextSpin - new Date()) / (1000 * 60));
+                    alert(`Hourly spin not available yet! Come back in ${minutesLeft} minutes.`);
                     return;
                 }
             } else {
@@ -1195,23 +1288,24 @@
                 // Record the spin
                 const history = loadSpinsHistory();
                 
-                if (currentWheel === 'daily') {
-                    history[selectedPlayer + '_daily_timestamp'] = new Date().toISOString();
+                if (currentWheel === 'hourly') {
+                    history[selectedPlayer + '_hourly_timestamp'] = new Date().toISOString();
                     
-                    // Store daily win
-                    const dailyWins = JSON.parse(localStorage.getItem('daily_wins_history') || '{}');
-                    if (!dailyWins[selectedPlayer]) dailyWins[selectedPlayer] = [];
+                    // Store hourly win
+                    const hourlyWins = JSON.parse(localStorage.getItem('hourly_wins_history') || '{}');
+                    if (!hourlyWins[selectedPlayer]) hourlyWins[selectedPlayer] = [];
                     
                     // Check if it's a Pokemon or Minecraft item
                     if (winningItemData.id <= 1000) { // Pokemon
-                        dailyWins[selectedPlayer].push({
+                        hourlyWins[selectedPlayer].push({
                             pokemon: winningItemData.name,
                             id: winningItemData.id,
                             isPokemon: true,
+                            level: 1,
                             timestamp: new Date().toISOString()
                         });
                     } else { // Minecraft item
-                        dailyWins[selectedPlayer].push({
+                        hourlyWins[selectedPlayer].push({
                             item: winningItemData.name,
                             id: winningItemData.id,
                             count: winningItemData.count,
@@ -1221,7 +1315,7 @@
                         });
                     }
                     
-                    localStorage.setItem('daily_wins_history', JSON.stringify(dailyWins));
+                    localStorage.setItem('hourly_wins_history', JSON.stringify(hourlyWins));
                     
                     // Show result with the actual item that landed
                     showResult(winningItemData, false);
@@ -1238,6 +1332,7 @@
                         pokemon: winningItemData.pokemon.name,
                         id: winningItemData.pokemon.id,
                         shiny: winningItemData.isShiny,
+                        level: winningItemData.level,
                         type: tokenType,
                         rarity: winningItemData.rarity,
                         timestamp: new Date().toISOString()
@@ -1246,7 +1341,7 @@
                     localStorage.setItem('wheel_wins_history', JSON.stringify(winsHistory));
                     
                     // Show result with the actual item that landed
-                    showResult(winningItemData.pokemon, winningItemData.isShiny);
+                    showResult(winningItemData.pokemon, winningItemData.isShiny, winningItemData.level);
                 }
                 
                 saveSpinsHistory(history);
@@ -1264,47 +1359,61 @@
             }, 4000);
         }
 
-        function showResult(item, isShiny) {
+        function showResult(item, isShiny, level = null) {
             const popup = document.getElementById('resultPopup');
             const title = document.getElementById('resultTitle');
             const sprite = document.getElementById('resultSprite');
             const name = document.getElementById('resultName');
+            const levelDisplay = document.getElementById('resultLevel');
             const shinyBadge = document.getElementById('shinyBadge');
             const netherstarBadge = document.getElementById('netherstarBadge');
             const enderBadge = document.getElementById('enderBadge');
+            const masterballBadge = document.getElementById('masterballBadge');
             
-            popup.classList.remove('shiny', 'netherstar', 'ender');
+            popup.classList.remove('shiny', 'netherstar', 'ender', 'masterball');
             shinyBadge.style.display = 'none';
             netherstarBadge.style.display = 'none';
             enderBadge.style.display = 'none';
+            masterballBadge.style.display = 'none';
             
-            if (currentWheel === 'daily') {
+            if (currentWheel === 'hourly') {
                 // Check if it's a Pokemon or Minecraft item
                 if (item.id <= 1000) { // Pokemon
                     sprite.src = getSprite(item.id, false);
                     name.textContent = item.name;
-                    title.textContent = 'Daily Pokémon! 🎁';
+                    levelDisplay.textContent = `Level: 1`;
+                    title.textContent = 'Hourly Pokémon! 🎁';
                 } else { // Minecraft item
-                    sprite.src = getMinecraftSprite(item.id);
+                    sprite.src = item.sprite || getMinecraftSprite(item.id);
                     
                     if (item.type === 'netherstar') {
                         name.textContent = `${item.name} (${item.count}x)`;
+                        levelDisplay.textContent = '';
                         popup.classList.add('netherstar');
                         title.textContent = '🌟 NETHER STAR! 🌟';
                         netherstarBadge.style.display = 'block';
                     } else if (item.type === 'ender') {
                         name.textContent = `${item.name} (${item.count}x)`;
+                        levelDisplay.textContent = '';
                         popup.classList.add('ender');
                         title.textContent = '👁️ EYES OF ENDER! 👁️';
                         enderBadge.style.display = 'block';
+                    } else if (item.type === 'masterball') {
+                        name.textContent = `${item.name} (${item.count}x)`;
+                        levelDisplay.textContent = '';
+                        popup.classList.add('masterball');
+                        title.textContent = '🎾 MASTERBALL! 🎾';
+                        masterballBadge.style.display = 'block';
                     } else {
                         name.textContent = `${item.name} (${item.count}x)`;
-                        title.textContent = 'Daily Reward! 🎁';
+                        levelDisplay.textContent = '';
+                        title.textContent = 'Hourly Reward! 🎁';
                     }
                 }
             } else {
                 sprite.src = getSprite(item.id, isShiny);
                 name.textContent = item.name;
+                levelDisplay.textContent = `Level: ${level}`;
                 
                 if (isShiny) {
                     popup.classList.add('shiny');
