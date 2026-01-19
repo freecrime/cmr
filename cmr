@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cobblemon Lucky Wheel</title>
     <style>
+        /* ... (all previous CSS remains the same) ... */
         * {
             margin: 0;
             padding: 0;
@@ -167,6 +168,12 @@
             box-shadow: 0 0 20px rgba(76, 201, 240, 0.5);
         }
 
+        .roulette-item.ender {
+            background: linear-gradient(135deg, #7209b7 0%, #3a0ca3 100%);
+            border-color: #9d4edd;
+            box-shadow: 0 0 20px rgba(157, 78, 221, 0.5);
+        }
+
         .roulette-item img {
             width: 64px;
             height: 64px;
@@ -188,9 +195,10 @@
             text-shadow: 0 0 5px rgba(255, 214, 10, 0.8);
         }
 
-        .roulette-item.netherstar .roulette-item-name {
+        .roulette-item.netherstar .roulette-item-name,
+        .roulette-item.ender .roulette-item-name {
             color: white;
-            text-shadow: 0 0 5px rgba(76, 201, 240, 0.8);
+            text-shadow: 0 0 5px rgba(157, 78, 221, 0.8);
         }
 
         .shiny-badge {
@@ -237,7 +245,7 @@
 
         .sidebar {
             display: flex;
-            flex-direction: column;
+            flex-direction:column;
             gap: 20px;
         }
 
@@ -262,15 +270,91 @@
             color: #98c1d9;
         }
 
-        .player-select {
+        /* Login Form Styles */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .login-input {
             width: 100%;
             padding: 12px;
             border: 2px solid #3d5a80;
             border-radius: 10px;
             font-size: 1em;
-            margin-top: 10px;
             background: #1a1f2e;
             color: #98c1d9;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #5a7a9a;
+        }
+
+        .login-button {
+            padding: 12px;
+            background: linear-gradient(135deg, #3d5a80 0%, #5a7a9a 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(61, 90, 128, 0.4);
+        }
+
+        .logout-button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #e63946 0%, #b91d43 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            align-self: center;
+        }
+
+        .logout-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(230, 57, 70, 0.4);
+        }
+
+        .player-info {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(26, 31, 46, 0.8);
+            border-radius: 10px;
+            border: 1px solid #3d5a80;
+        }
+
+        .player-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #98c1d9;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .player-subtitle {
+            font-size: 0.9em;
+            opacity: 0.8;
+            text-align: center;
+        }
+
+        .login-error {
+            color: #e63946;
+            font-size: 0.9em;
+            margin-top: 5px;
+            text-align: center;
+            display: none;
         }
 
         .refresh-button {
@@ -377,6 +461,11 @@
             border-color: #4cc9f0;
         }
 
+        .result-popup.ender {
+            background: linear-gradient(135deg, #7209b7 0%, #3a0ca3 100%);
+            border-color: #9d4edd;
+        }
+
         @keyframes popupAppear {
             from {
                 transform: translate(-50%, -50%) scale(0.5);
@@ -395,7 +484,8 @@
         }
 
         .result-popup.shiny h2,
-        .result-popup.netherstar h2 {
+        .result-popup.netherstar h2,
+        .result-popup.ender h2 {
             color: white;
         }
 
@@ -417,7 +507,8 @@
         }
 
         .result-popup.shiny .result-pokemon-name,
-        .result-popup.netherstar .result-pokemon-name {
+        .result-popup.netherstar .result-pokemon-name,
+        .result-popup.ender .result-pokemon-name {
             color: white;
         }
 
@@ -437,6 +528,18 @@
             display: inline-block;
             background: white;
             color: #4361ee;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 700;
+            margin-top: 10px;
+            animation: shimmer 2s infinite;
+        }
+
+        .result-ender-badge {
+            display: inline-block;
+            background: white;
+            color: #7209b7;
             padding: 5px 15px;
             border-radius: 20px;
             font-size: 0.9em;
@@ -524,7 +627,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Cobblemon Lucky Wheel</h1>
+            <h1>🎰 Cobblemon Lucky Wheel</h1>
             <p>Trade a Masterball for a Legendary Token and spin!</p>
         </div>
 
@@ -549,16 +652,32 @@
             </div>
 
             <div class="sidebar">
-                <div class="token-display">
+                <div class="token-display" id="tokenDisplay">
                     <h3>Your Legendary Tokens</h3>
-                    <select class="player-select" id="playerSelect" onchange="updateTokenDisplay()">
-                        <option value="">Select Player...</option>
-                    </select>
-                    <div class="token-count" id="normalTokenCount">-</div>
-                    <div style="font-size: 0.9em; opacity: 0.9;">Normal Tokens</div>
-                    <div class="token-count" id="eventTokenCount" style="font-size: 2em; margin-top: 15px;">-</div>
-                    <div style="font-size: 0.9em; opacity: 0.9;">Event Tokens</div>
-                    <button class="refresh-button" onclick="loadTokenData()">🔄 Refresh Tokens</button>
+                    
+                    <!-- Login Form (shown when not logged in) -->
+                    <div class="login-form" id="loginForm">
+                        <input type="text" class="login-input" id="usernameInput" placeholder="Username" autocomplete="username">
+                        <input type="password" class="login-input" id="passwordInput" placeholder="Password" autocomplete="current-password">
+                        <div class="login-error" id="loginError">Invalid username or password!</div>
+                        <button class="login-button" onclick="login()">Login</button>
+                    </div>
+                    
+                    <!-- Logged in view -->
+                    <div id="loggedInView" style="display: none;">
+                        <div class="player-info">
+                            <div class="player-name" id="playerNameDisplay">-</div>
+                            <div class="player-subtitle">Logged In</div>
+                        </div>
+                        
+                        <div class="token-count" id="normalTokenCount">-</div>
+                        <div style="font-size: 0.9em; opacity: 0.9;">Normal Tokens</div>
+                        <div class="token-count" id="eventTokenCount" style="font-size: 2em; margin-top: 15px;">-</div>
+                        <div style="font-size: 0.9em; opacity: 0.9;">Event Tokens</div>
+                        
+                        <button class="logout-button" onclick="logout()">Logout</button>
+                        <button class="refresh-button" onclick="loadTokenData()">🔄 Refresh Tokens</button>
+                    </div>
                 </div>
 
                 <div class="pokemon-list">
@@ -580,6 +699,7 @@
             <div class="result-pokemon-name" id="resultName"></div>
             <div id="shinyBadge" style="display: none;" class="result-shiny-badge">✨ SHINY ✨</div>
             <div id="netherstarBadge" style="display: none;" class="result-netherstar-badge">🌟 NETHER STAR 🌟</div>
+            <div id="enderBadge" style="display: none;" class="result-ender-badge">👁️ EYES OF ENDER 👁️</div>
         </div>
         <button class="close-popup" onclick="closePopup()">Close</button>
     </div>
@@ -588,6 +708,7 @@
         // Daily Spin Minecraft Items
         const dailyItems = [
             { name: 'Nether Star', id: 'nether_star', count: 1, type: 'netherstar', rarity: 'legendary' },
+            { name: 'Eyes of Ender', id: 'ender_eye', count: 8, type: 'ender', rarity: 'rare' },
             { name: 'Diamond', id: 'diamond', count: 10, type: 'rare' },
             { name: 'Netherite Scrap', id: 'netherite_scrap', count: 3, type: 'rare' },
             { name: 'Iron Ingot', id: 'iron_ingot', count: 32, type: 'common' },
@@ -601,35 +722,131 @@
 
         // Pokemon lists
         const normalLegendaries = [
-            { name: 'Zapdos', id: 145 },
-            { name: 'Moltres', id: 146 },
-            { name: 'Articuno', id: 144 },
-            { name: 'Regirock', id: 377 },
-            { name: 'Registeel', id: 379 },
-            { name: 'Regice', id: 378 },
-            { name: 'Regigigas', id: 486 },
-            { name: 'Regieleki', id: 894 },
-            { name: 'Regidrago', id: 895 },
-            { name: 'Zarude', id: 893 }
+            { name: 'Zapdos', id: 145, shiny: false },
+            { name: 'Moltres', id: 146, shiny: false },
+            { name: 'Articuno', id: 144, shiny: false },
+            { name: 'Regirock', id: 377, shiny: false },
+            { name: 'Registeel', id: 379, shiny: false },
+            { name: 'Regice', id: 378, shiny: false },
+            { name: 'Regigigas', id: 486, shiny: false },
+            { name: 'Regieleki', id: 894, shiny: false },
+            { name: 'Regidrago', id: 895, shiny: false },
+            { name: 'Zarude', id: 893, shiny: false },
+            // Shiny only Pokemon (more common)
+            { name: 'Umbreon', id: 197, shiny: true, rarity: 'common' },
+            { name: 'Espeon', id: 196, shiny: true, rarity: 'common' },
+            { name: 'Milotic', id: 350, shiny: true, rarity: 'common' },
+            { name: 'Metagross', id: 376, shiny: true, rarity: 'common' },
+            { name: 'Mismagius', id: 429, shiny: true, rarity: 'common' },
+            { name: 'Gliscor', id: 472, shiny: true, rarity: 'common' },
+            { name: 'Gigalith', id: 526, shiny: true, rarity: 'common' }
         ];
 
         const eventLegendaries = [
-            { name: 'Mew', id: 151 },
-            { name: 'Mewtwo', id: 150 },
-            { name: 'Lugia', id: 249 },
-            { name: 'Ho-Oh', id: 250 },
-            { name: 'Rayquaza', id: 384 },
-            { name: 'Xerneas', id: 716 },
-            { name: 'Latias', id: 380 },
-            { name: 'Latios', id: 381 }
+            { name: 'Mew', id: 151, shiny: false },
+            { name: 'Mewtwo', id: 150, shiny: false },
+            { name: 'Lugia', id: 249, shiny: false },
+            { name: 'Ho-Oh', id: 250, shiny: false },
+            { name: 'Rayquaza', id: 384, shiny: false },
+            { name: 'Xerneas', id: 716, shiny: false },
+            { name: 'Latias', id: 380, shiny: false },
+            { name: 'Latios', id: 381, shiny: false }
+        ];
+
+        // Additional Pokemon for daily spin (non-shiny only)
+        const dailyPokemon = [
+            { name: 'Growlithe', id: 58, shiny: false },
+            { name: 'Machop', id: 66, shiny: false },
+            { name: 'Dratini', id: 147, shiny: false },
+            { name: 'Ralts', id: 280, shiny: false }
         ];
 
         let currentWheel = 'normal';
         let spinning = false;
         let tokenData = {};
+        let userAccounts = {}; // Stores username:password pairs
         let selectedPlayer = '';
         const SHINY_CHANCE = 0.01;
+        const SHINY_ONLY_CHANCE = 0.10; // 10% chance for shiny-only Pokemon in normal wheel
         let rouletteItems = [];
+
+        // Load saved login from localStorage
+        function loadSavedLogin() {
+            const savedUser = localStorage.getItem('wheel_logged_in_user');
+            if (savedUser) {
+                selectedPlayer = savedUser;
+                updateLoginUI();
+                loadTokenData();
+            }
+        }
+
+        // Update login UI based on login state
+        function updateLoginUI() {
+            const loginForm = document.getElementById('loginForm');
+            const loggedInView = document.getElementById('loggedInView');
+            const playerNameDisplay = document.getElementById('playerNameDisplay');
+            const usernameInput = document.getElementById('usernameInput');
+            const passwordInput = document.getElementById('passwordInput');
+            const loginError = document.getElementById('loginError');
+            
+            if (selectedPlayer) {
+                // User is logged in
+                loginForm.style.display = 'none';
+                loggedInView.style.display = 'block';
+                playerNameDisplay.textContent = selectedPlayer;
+                
+                // Clear password field
+                passwordInput.value = '';
+                loginError.style.display = 'none';
+            } else {
+                // User is not logged in
+                loginForm.style.display = 'flex';
+                loggedInView.style.display = 'none';
+                playerNameDisplay.textContent = '-';
+                
+                // Clear input fields
+                usernameInput.value = '';
+                passwordInput.value = '';
+                loginError.style.display = 'none';
+                
+                // Reset token display
+                document.getElementById('normalTokenCount').textContent = '-';
+                document.getElementById('eventTokenCount').textContent = '-';
+            }
+        }
+
+        // Login function
+        function login() {
+            const username = document.getElementById('usernameInput').value.trim();
+            const password = document.getElementById('passwordInput').value.trim();
+            const loginError = document.getElementById('loginError');
+            
+            if (!username || !password) {
+                loginError.textContent = 'Please enter username and password!';
+                loginError.style.display = 'block';
+                return;
+            }
+            
+            // Check if username exists and password matches
+            if (userAccounts[username] && userAccounts[username] === password) {
+                selectedPlayer = username;
+                localStorage.setItem('wheel_logged_in_user', username);
+                updateLoginUI();
+                loadTokenData();
+                loginError.style.display = 'none';
+            } else {
+                loginError.textContent = 'Invalid username or password!';
+                loginError.style.display = 'block';
+            }
+        }
+
+        // Logout function
+        function logout() {
+            selectedPlayer = '';
+            localStorage.removeItem('wheel_logged_in_user');
+            updateLoginUI();
+            tokenData = {};
+        }
 
         // Get Minecraft item sprite
         function getMinecraftSprite(id) {
@@ -696,29 +913,63 @@
             
             // Create enough items for a smooth spin
             for (let i = 0; i < 60; i++) {
-                const item = items[Math.floor(Math.random() * items.length)];
+                let item;
                 
                 if (currentWheel === 'daily') {
+                    // For daily spin, include both Minecraft items and Pokemon
+                    const allDailyItems = [...dailyItems, ...dailyPokemon];
+                    item = allDailyItems[Math.floor(Math.random() * allDailyItems.length)];
+                    
                     const isNetherstar = item.type === 'netherstar';
+                    const isEnder = item.type === 'ender';
+                    
                     rouletteItems.push({
                         ...item,
                         isShiny: false,
-                        type: isNetherstar ? 'netherstar' : 'normal'
+                        type: isNetherstar ? 'netherstar' : (isEnder ? 'ender' : 'normal'),
+                        isPokemon: item.id <= 1000 // Assuming Pokemon IDs are less than 1000
                     });
                     
                     const div = document.createElement('div');
-                    div.className = 'roulette-item' + (isNetherstar ? ' netherstar' : '');
-                    div.innerHTML = `
-                        <img src="${getMinecraftSprite(item.id)}" alt="${item.name}">
-                        <div class="roulette-item-name">${item.name}</div>
-                        <div class="item-count">${item.count}x</div>
-                    `;
+                    if (isNetherstar) {
+                        div.className = 'roulette-item netherstar';
+                    } else if (isEnder) {
+                        div.className = 'roulette-item ender';
+                    } else {
+                        div.className = 'roulette-item';
+                    }
+                    
+                    if (item.id <= 1000) { // It's a Pokemon
+                        div.innerHTML = `
+                            <img src="${getSprite(item.id, false)}" alt="${item.name}">
+                            <div class="roulette-item-name">${item.name}</div>
+                        `;
+                    } else { // It's a Minecraft item
+                        div.innerHTML = `
+                            <img src="${getMinecraftSprite(item.id)}" alt="${item.name}">
+                            <div class="roulette-item-name">${item.name}</div>
+                            <div class="item-count">${item.count}x</div>
+                        `;
+                    }
                     track.appendChild(div);
                 } else {
-                    const isShiny = Math.random() < 0.05; // 5% shiny in preview
+                    // For legendary wheels
+                    item = items[Math.floor(Math.random() * items.length)];
+                    
+                    // Determine if shiny
+                    let isShiny = false;
+                    if (item.shiny === true) {
+                        // This Pokemon can only be shiny
+                        isShiny = true;
+                    } else if (Math.random() < SHINY_CHANCE) {
+                        // Regular legendary has 1% chance to be shiny
+                        isShiny = true;
+                    }
+                    
                     rouletteItems.push({
                         pokemon: item,
-                        isShiny: isShiny
+                        isShiny: isShiny,
+                        rarity: item.rarity || 'legendary'
                     });
                     
                     const div = document.createElement('div');
@@ -746,6 +997,7 @@
                 shinyInfo.style.display = 'none';
                 list.innerHTML = '';
                 
+                // Show Minecraft items
                 dailyItems.forEach(item => {
                     const listItem = document.createElement('div');
                     listItem.className = 'pokemon-item';
@@ -754,6 +1006,17 @@
                         <span>${item.name} (${item.count}x)</span>
                     `;
                     list.appendChild(listItem);
+                });
+                
+                // Show Pokemon
+                dailyPokemon.forEach(pokemon => {
+                    const item = document.createElement('div');
+                    item.className = 'pokemon-item';
+                    item.innerHTML = `
+                        <img class="pokemon-sprite" src="${getSprite(pokemon.id)}" alt="${pokemon.name}">
+                        <span>${pokemon.name}</span>
+                    `;
+                    list.appendChild(item);
                 });
             } else {
                 const legendaries = currentWheel === 'normal' ? normalLegendaries : eventLegendaries;
@@ -764,9 +1027,13 @@
                 legendaries.forEach(pokemon => {
                     const item = document.createElement('div');
                     item.className = 'pokemon-item';
+                    
+                    // Check if this Pokemon is shiny-only
+                    const isShinyOnly = pokemon.shiny === true;
+                    
                     item.innerHTML = `
-                        <img class="pokemon-sprite" src="${getSprite(pokemon.id)}" alt="${pokemon.name}">
-                        <span>${pokemon.name}</span>
+                        <img class="pokemon-sprite" src="${getSprite(pokemon.id, isShinyOnly)}" alt="${pokemon.name}">
+                        <span>${pokemon.name}${isShinyOnly ? ' (Shiny)' : ''}</span>
                     `;
                     list.appendChild(item);
                 });
@@ -803,46 +1070,28 @@
                 
                 const lines = text.trim().split('\n');
                 tokenData = {};
+                userAccounts = {}; // Reset accounts
                 
                 lines.forEach(line => {
-                    const match1 = line.match(/(\w+)\s*=\s*(\d+)/);
-                    const match2 = line.match(/(\w+):\s*(\d+)/);
+                    const match = line.match(/(\w+)\s*=\s*([^\s]+)/);
                     
-                    if (match1) {
-                        tokenData[match1[1]] = parseInt(match1[2]);
-                    } else if (match2) {
-                        tokenData[match2[1]] = parseInt(match2[2]);
+                    if (match) {
+                        const key = match[1];
+                        const value = match[2];
+                        
+                        if (key.endsWith('_acc')) {
+                            // This is an account entry (username: password)
+                            const username = key.replace('_acc', '');
+                            userAccounts[username] = value;
+                        } else {
+                            // This is a token count entry
+                            const numValue = parseInt(value);
+                            if (!isNaN(numValue)) {
+                                tokenData[key] = numValue;
+                            }
+                        }
                     }
                 });
-                
-                const select = document.getElementById('playerSelect');
-                const currentValue = select.value;
-                select.innerHTML = '<option value="">Select Player...</option>';
-                
-                const uniquePlayers = new Set();
-                
-                Object.keys(tokenData).forEach(key => {
-                    let player = key;
-                    
-                    if (key.endsWith('_event')) {
-                        player = key.replace('_event', '');
-                    } else if (key.endsWith('_normal')) {
-                        player = key.replace('_normal', '');
-                    }
-                    
-                    uniquePlayers.add(player);
-                });
-                
-                Array.from(uniquePlayers).sort().forEach(player => {
-                    const option = document.createElement('option');
-                    option.value = player;
-                    option.textContent = player;
-                    select.appendChild(option);
-                });
-                
-                if (currentValue && uniquePlayers.has(currentValue)) {
-                    select.value = currentValue;
-                }
                 
                 updateTokenDisplay();
             } catch (error) {
@@ -852,40 +1101,30 @@
         }
 
         function updateTokenDisplay() {
-            const player = document.getElementById('playerSelect').value;
+            if (!selectedPlayer) return;
+            
             const normalCount = document.getElementById('normalTokenCount');
             const eventCount = document.getElementById('eventTokenCount');
             
-            if (player && tokenData) {
-                selectedPlayer = player;
-                
-                const normalTokens = tokenData[player] || tokenData[player + '_normal'] || 0;
-                const eventTokens = tokenData[player + '_event'] || 0;
-                
-                const remainingNormal = getRemainingSpins(player, 'normal');
-                const remainingEvent = getRemainingSpins(player, 'event');
-                
-                normalCount.textContent = `${remainingNormal} / ${normalTokens}`;
-                eventCount.textContent = `${remainingEvent} / ${eventTokens}`;
-                
-                if (remainingNormal <= 0) {
-                    normalCount.style.color = '#e63946';
-                } else {
-                    normalCount.style.color = '#98c1d9';
-                }
-                
-                if (remainingEvent <= 0) {
-                    eventCount.style.color = '#e63946';
-                } else {
-                    eventCount.style.color = '#98c1d9';
-                }
-                
+            const normalTokens = tokenData[selectedPlayer] || 0;
+            const eventTokens = tokenData[selectedPlayer + '_event'] || 0;
+            
+            const remainingNormal = getRemainingSpins(selectedPlayer, 'normal');
+            const remainingEvent = getRemainingSpins(selectedPlayer, 'event');
+            
+            normalCount.textContent = `${remainingNormal} / ${normalTokens}`;
+            eventCount.textContent = `${remainingEvent} / ${eventTokens}`;
+            
+            if (remainingNormal <= 0) {
+                normalCount.style.color = '#e63946';
             } else {
-                normalCount.textContent = '-';
-                eventCount.textContent = '-';
                 normalCount.style.color = '#98c1d9';
+            }
+            
+            if (remainingEvent <= 0) {
+                eventCount.style.color = '#e63946';
+            } else {
                 eventCount.style.color = '#98c1d9';
-                selectedPlayer = '';
             }
         }
 
@@ -893,7 +1132,7 @@
             if (spinning) return;
             
             if (!selectedPlayer) {
-                alert('Please select a player first!');
+                alert('Please login first!');
                 return;
             }
             
@@ -958,15 +1197,30 @@
                 
                 if (currentWheel === 'daily') {
                     history[selectedPlayer + '_daily_timestamp'] = new Date().toISOString();
+                    
                     // Store daily win
                     const dailyWins = JSON.parse(localStorage.getItem('daily_wins_history') || '{}');
                     if (!dailyWins[selectedPlayer]) dailyWins[selectedPlayer] = [];
-                    dailyWins[selectedPlayer].push({
-                        item: winningItemData.name,
-                        id: winningItemData.id,
-                        count: winningItemData.count,
-                        timestamp: new Date().toISOString()
-                    });
+                    
+                    // Check if it's a Pokemon or Minecraft item
+                    if (winningItemData.id <= 1000) { // Pokemon
+                        dailyWins[selectedPlayer].push({
+                            pokemon: winningItemData.name,
+                            id: winningItemData.id,
+                            isPokemon: true,
+                            timestamp: new Date().toISOString()
+                        });
+                    } else { // Minecraft item
+                        dailyWins[selectedPlayer].push({
+                            item: winningItemData.name,
+                            id: winningItemData.id,
+                            count: winningItemData.count,
+                            type: winningItemData.type,
+                            isPokemon: false,
+                            timestamp: new Date().toISOString()
+                        });
+                    }
+                    
                     localStorage.setItem('daily_wins_history', JSON.stringify(dailyWins));
                     
                     // Show result with the actual item that landed
@@ -979,13 +1233,16 @@
                     // Store Pokemon win
                     const winsHistory = JSON.parse(localStorage.getItem('wheel_wins_history') || '{}');
                     if (!winsHistory[selectedPlayer]) winsHistory[selectedPlayer] = [];
+                    
                     winsHistory[selectedPlayer].push({
                         pokemon: winningItemData.pokemon.name,
                         id: winningItemData.pokemon.id,
                         shiny: winningItemData.isShiny,
                         type: tokenType,
+                        rarity: winningItemData.rarity,
                         timestamp: new Date().toISOString()
                     });
+                    
                     localStorage.setItem('wheel_wins_history', JSON.stringify(winsHistory));
                     
                     // Show result with the actual item that landed
@@ -1014,21 +1271,36 @@
             const name = document.getElementById('resultName');
             const shinyBadge = document.getElementById('shinyBadge');
             const netherstarBadge = document.getElementById('netherstarBadge');
+            const enderBadge = document.getElementById('enderBadge');
             
-            popup.classList.remove('shiny', 'netherstar');
+            popup.classList.remove('shiny', 'netherstar', 'ender');
             shinyBadge.style.display = 'none';
             netherstarBadge.style.display = 'none';
+            enderBadge.style.display = 'none';
             
             if (currentWheel === 'daily') {
-                sprite.src = getMinecraftSprite(item.id);
-                name.textContent = `${item.name} (${item.count}x)`;
-                
-                if (item.type === 'netherstar') {
-                    popup.classList.add('netherstar');
-                    title.textContent = '🌟 NETHER STAR! 🌟';
-                    netherstarBadge.style.display = 'block';
-                } else {
-                    title.textContent = 'Daily Reward! 🎁';
+                // Check if it's a Pokemon or Minecraft item
+                if (item.id <= 1000) { // Pokemon
+                    sprite.src = getSprite(item.id, false);
+                    name.textContent = item.name;
+                    title.textContent = 'Daily Pokémon! 🎁';
+                } else { // Minecraft item
+                    sprite.src = getMinecraftSprite(item.id);
+                    
+                    if (item.type === 'netherstar') {
+                        name.textContent = `${item.name} (${item.count}x)`;
+                        popup.classList.add('netherstar');
+                        title.textContent = '🌟 NETHER STAR! 🌟';
+                        netherstarBadge.style.display = 'block';
+                    } else if (item.type === 'ender') {
+                        name.textContent = `${item.name} (${item.count}x)`;
+                        popup.classList.add('ender');
+                        title.textContent = '👁️ EYES OF ENDER! 👁️';
+                        enderBadge.style.display = 'block';
+                    } else {
+                        name.textContent = `${item.name} (${item.count}x)`;
+                        title.textContent = 'Daily Reward! 🎁';
+                    }
                 }
             } else {
                 sprite.src = getSprite(item.id, isShiny);
@@ -1036,7 +1308,7 @@
                 
                 if (isShiny) {
                     popup.classList.add('shiny');
-                    title.textContent = '🌟 SHINY LEGENDARY! 🌟';
+                    title.textContent = '🌟 SHINY POKÉMON! 🌟';
                     shinyBadge.style.display = 'block';
                 } else {
                     title.textContent = 'Congratulations! 🎉';
@@ -1055,6 +1327,7 @@
         // Initialize
         createRoulette();
         updatePokemonList();
+        loadSavedLogin(); // Load saved login if exists
         loadTokenData();
     </script>
 </body>
