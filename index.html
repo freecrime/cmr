@@ -1420,6 +1420,21 @@
                 }
             }
             
+            // CONSUME THE TOKEN/HOURLY SPIN IMMEDIATELY
+            const history = loadSpinsHistory();
+            
+            if (currentWheel === 'hourly') {
+                // Record hourly spin timestamp
+                history[selectedPlayer + '_hourly_timestamp'] = new Date().toISOString();
+            } else {
+                const tokenType = currentWheel === 'normal' ? 'normal' : 'event';
+                const historyKey = selectedPlayer + (tokenType === 'event' ? '_event' : '');
+                history[historyKey] = (history[historyKey] || 0) + 1;
+            }
+            
+            saveSpinsHistory(history);
+            updateTokenDisplay(); // Update display immediately
+            
             spinning = true;
             const spinButton = document.getElementById('spinButton');
             spinButton.disabled = true;
@@ -1456,12 +1471,7 @@
                 // Get the winning item from the roulette
                 let winningItemData = rouletteItems[winningIndex];
                 
-                // Record the spin
-                const history = loadSpinsHistory();
-                
                 if (currentWheel === 'hourly') {
-                    history[selectedPlayer + '_hourly_timestamp'] = new Date().toISOString();
-                    
                     // Store hourly win
                     const hourlyWins = JSON.parse(localStorage.getItem('hourly_wins_history') || '{}');
                     if (!hourlyWins[selectedPlayer]) hourlyWins[selectedPlayer] = [];
@@ -1492,10 +1502,6 @@
                     // Show result with the actual item that landed
                     showResult(winningItemData, winningItemData.isPokemon); // Hourly Pokemon are always shiny
                 } else {
-                    const tokenType = currentWheel === 'normal' ? 'normal' : 'event';
-                    const historyKey = selectedPlayer + (tokenType === 'event' ? '_event' : '');
-                    history[historyKey] = (history[historyKey] || 0) + 1;
-                    
                     // Store Pokemon win
                     const winsHistory = JSON.parse(localStorage.getItem('wheel_wins_history') || '{}');
                     if (!winsHistory[selectedPlayer]) winsHistory[selectedPlayer] = [];
@@ -1505,7 +1511,7 @@
                         id: winningItemData.pokemon.id,
                         shiny: winningItemData.isShiny,
                         level: winningItemData.level,
-                        type: tokenType,
+                        type: currentWheel,
                         rarity: winningItemData.rarity,
                         timestamp: new Date().toISOString()
                     });
@@ -1516,8 +1522,6 @@
                     showResult(winningItemData.pokemon, winningItemData.isShiny, winningItemData.level);
                 }
                 
-                saveSpinsHistory(history);
-                
                 spinning = false;
                 spinButton.disabled = false;
                 spinButton.textContent = 'Spin the Wheel!';
@@ -1526,8 +1530,6 @@
                 setTimeout(() => {
                     createRoulette();
                 }, 500);
-                
-                updateTokenDisplay();
             }, 4000);
         }
 
