@@ -867,19 +867,26 @@
 
         // Pokemon lists
         const normalLegendaries = [
+            { name: 'Articuno', id: 144, shiny: false },
             { name: 'Zapdos', id: 145, shiny: false },
             { name: 'Moltres', id: 146, shiny: false },
-            { name: 'Articuno', id: 144, shiny: false },
+            { name: 'Entei', id: 244, shiny: false },
+            { name: 'Raikou', id: 243, shiny: false },
+            { name: 'Suicune', id: 245, shiny: false },
+            { name: 'Celebi', id: 251, shiny: false },
             { name: 'Regirock', id: 377, shiny: false },
-            { name: 'Registeel', id: 379, shiny: false },
             { name: 'Regice', id: 378, shiny: false },
+            { name: 'Registeel', id: 379, shiny: false },
+            { name: 'Jirachi', id: 385, shiny: false },
             { name: 'Regigigas', id: 486, shiny: false },
+            { name: 'Victini', id: 494, shiny: false },
+            { name: 'Zarude', id: 893, shiny: false },
             { name: 'Regieleki', id: 894, shiny: false },
             { name: 'Regidrago', id: 895, shiny: false },
-            { name: 'Zarude', id: 893, shiny: false },
-            // Paradox Pokemon
+            { name: 'Roaring Moon', id: 1005, shiny: false, rarity: 'legendary' },
             { name: 'Walking Wake', id: 1009, shiny: false, rarity: 'legendary' },
             { name: 'Iron Leaves', id: 1010, shiny: false, rarity: 'legendary' },
+            { name: 'Archaludon', id: 1018, shiny: false, rarity: 'legendary' },
             // Shiny only Pokemon (more common)
             { name: 'Umbreon', id: 197, shiny: true, rarity: 'common' },
             { name: 'Espeon', id: 196, shiny: true, rarity: 'common' },
@@ -888,13 +895,14 @@
             { name: 'Mismagius', id: 429, shiny: true, rarity: 'common' },
             { name: 'Gliscor', id: 472, shiny: true, rarity: 'common' },
             { name: 'Gigalith', id: 526, shiny: true, rarity: 'common' },
-            // New shiny-only additions
             { name: 'Gardevoir', id: 282, shiny: true, rarity: 'common' },
             { name: 'Luxray', id: 405, shiny: true, rarity: 'common' },
-            { name: 'Togekiss', id: 468, shiny: true, rarity: 'common' },
             { name: 'Gallade', id: 475, shiny: true, rarity: 'common' },
+            { name: 'Togekiss', id: 468, shiny: true, rarity: 'common' },
             { name: 'Noivern', id: 715, shiny: true, rarity: 'common' },
-            { name: 'Sneasler', id: 903, shiny: true, rarity: 'common' }
+            { name: 'Sneasler', id: 903, shiny: true, rarity: 'common' },
+            { name: 'Necrozma', id: 800, shiny: true, rarity: 'legendary' },
+            { name: 'Kartana', id: 798, shiny: true, rarity: 'legendary' }
         ];
 
         const eventLegendaries = [
@@ -902,18 +910,36 @@
             { name: 'Mewtwo', id: 150, shiny: false },
             { name: 'Lugia', id: 249, shiny: false },
             { name: 'Ho-Oh', id: 250, shiny: false },
+            { name: 'Deoxys', id: 386, shiny: false },
             { name: 'Rayquaza', id: 384, shiny: false },
-            { name: 'Xerneas', id: 716, shiny: false },
             { name: 'Latias', id: 380, shiny: false },
             { name: 'Latios', id: 381, shiny: false },
-            // New shiny-only event additions
-            { name: 'Naganadel', id: 804, shiny: true, rarity: 'legendary' },
+            { name: 'Kyogre', id: 382, shiny: false },
+            { name: 'Groudon', id: 383, shiny: false },
+            { name: 'Dialga', id: 483, shiny: false },
+            { name: 'Palkia', id: 484, shiny: false },
+            { name: 'Giratina', id: 487, shiny: false },
+            { name: 'Darkrai', id: 491, shiny: false },
+            { name: 'Arceus', id: 493, shiny: false },
+            { name: 'Reshiram', id: 643, shiny: false },
+            { name: 'Zekrom', id: 644, shiny: false },
+            { name: 'Kyurem', id: 646, shiny: false },
+            { name: 'Xerneas', id: 716, shiny: false },
+            { name: 'Solgaleo', id: 791, shiny: false },
+            { name: 'Lunala', id: 792, shiny: false },
+            { name: 'Zacian', id: 888, shiny: false },
+            { name: 'Zamazenta', id: 889, shiny: false },
+            { name: 'Koraidon', id: 1007, shiny: false },
+            { name: 'Miraidon', id: 1008, shiny: false },
+            // New shiny-only event additions (Eternatus last in this section)
             { name: 'Spiritomb', id: 442, shiny: true, rarity: 'legendary' },
             { name: 'Lucario', id: 448, shiny: true, rarity: 'legendary' },
             { name: 'Zoroark', id: 571, shiny: true, rarity: 'legendary' },
             { name: 'Haxorus', id: 612, shiny: true, rarity: 'legendary' },
             { name: 'Sylveon', id: 700, shiny: true, rarity: 'legendary' },
-            { name: 'Dragapult', id: 887, shiny: true, rarity: 'legendary' }
+            { name: 'Naganadel', id: 804, shiny: true, rarity: 'legendary' },
+            { name: 'Dragapult', id: 887, shiny: true, rarity: 'legendary' },
+            { name: 'Eternatus', id: 890, shiny: true, rarity: 'legendary', level: 85 }
         ];
 
         // Additional Pokemon for hourly spin (all shiny)
@@ -1042,6 +1068,7 @@
                 case 'normal':
                     return isShiny ? 45 : 50;
                 case 'event':
+                    // Special case for Eternatus - level 85
                     return 70;
                 default:
                     return 50;
@@ -1165,7 +1192,13 @@
                         isShiny = true;
                     }
                     
-                    const level = getPokemonLevel(currentWheel, isShiny);
+                    // Special level for Eternatus in event wheel
+                    let level;
+                    if (currentWheel === 'event' && item.id === 890) { // Eternatus
+                        level = 85; // Special level for Eternatus
+                    } else {
+                        level = getPokemonLevel(currentWheel, isShiny);
+                    }
                     
                     rouletteItems.push({
                         pokemon: item,
@@ -1246,11 +1279,20 @@
                     
                     // Check if this Pokemon is shiny-only
                     const isShinyOnly = pokemon.shiny === true;
-                    const itemLevel = isShinyOnly ? shinyLevel : level;
+                    // Special level for Eternatus in event wheel
+                    let itemLevel;
+                    if (currentWheel === 'event' && pokemon.id === 890) { // Eternatus
+                        itemLevel = 85; // Special level for Eternatus
+                    } else {
+                        itemLevel = isShinyOnly ? shinyLevel : level;
+                    }
                     
                     if (isShinyOnly) {
                         item.style.background = 'linear-gradient(135deg, rgba(255,214,10,0.2) 0%, rgba(255,183,3,0.2) 100%)';
                         item.style.borderColor = '#ffd60a';
+                    } else if (currentWheel === 'event' && pokemon.id === 890) { // Eternatus
+                        item.style.background = 'linear-gradient(135deg, rgba(128, 0, 128, 0.3) 0%, rgba(255, 20, 147, 0.3) 100%)';
+                        item.style.borderColor = '#ff1493';
                     }
                     
                     item.innerHTML = `
@@ -1561,6 +1603,16 @@
                     shinyBadge.style.display = 'block';
                 } else {
                     title.textContent = 'Congratulations! 🎉';
+                }
+                
+                // Special styling for Eternatus
+                if (item.id === 890) { // Eternatus
+                    title.textContent = '🌟 ULTIMATE PRIZE! 🌟';
+                    popup.style.background = 'linear-gradient(135deg, #8a2be2 0%, #ff1493 100%)';
+                    popup.style.borderColor = '#ff1493';
+                    name.style.color = 'white';
+                    levelDisplay.style.color = 'white';
+                    title.style.color = 'white';
                 }
             }
             
