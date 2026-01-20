@@ -845,6 +845,9 @@
     </div>
 
     <script>
+        // Discord Webhook URL
+        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1463207122945704130/24p-jtB_cVc73tMMU_Pq8gEOG3W7wnIWK4yDrjNb67vu0ZT-1jk_ScAuOyQ18QXniAX6';
+
         // Hourly Spin Items (with proper Pokéball sprites)
         const hourlyItems = [
             { name: 'Nether Star', id: 'nether_star', count: 1, type: 'netherstar', rarity: 'legendary', isMinecraft: true },
@@ -968,6 +971,77 @@
         const MASTERBALL_CHANCE = 0.01; // Same as Nether Star rarity
         const RARE_SHINY_CHANCE = 0.03; // 3% chance for rare shiny starters in hourly
         let rouletteItems = [];
+
+        // Function to send win to Discord webhook
+        async function sendToDiscordWebhook(username, winDetails, wheelType) {
+            try {
+                // Format the message based on wheel type and win type
+                let messageContent = `🎉 **NEW WHEEL WIN!** 🎉\n`;
+                messageContent += `**Player:** ${username}\n`;
+                messageContent += `**Wheel Type:** ${wheelType.charAt(0).toUpperCase() + wheelType.slice(1)}\n`;
+                
+                if (wheelType === 'hourly') {
+                    if (winDetails.isPokemon) {
+                        messageContent += `**Prize:** ✨ Shiny ${winDetails.pokemon} (Lvl 1)\n`;
+                    } else {
+                        messageContent += `**Prize:** ${winDetails.item} (${winDetails.count}x)\n`;
+                        if (winDetails.type === 'netherstar') {
+                            messageContent += `**Rarity:** 🌟 Nether Star (Ultimate Prize!)\n`;
+                        } else if (winDetails.type === 'ender') {
+                            messageContent += `**Rarity:** 👁️ Eyes of Ender (Rare!)\n`;
+                        } else if (winDetails.type === 'masterball') {
+                            messageContent += `**Rarity:** 🎾 Masterball (Legendary!)\n`;
+                        } else if (winDetails.type === 'cherish') {
+                            messageContent += `**Rarity:** ❤️ Cherish Balls (Rare!)\n`;
+                        }
+                    }
+                } else {
+                    // Legendary wheel win
+                    messageContent += `**Pokémon:** ${winDetails.pokemon}${winDetails.shiny ? ' ✨' : ''}\n`;
+                    messageContent += `**Level:** ${winDetails.level}\n`;
+                    messageContent += `**Shiny:** ${winDetails.shiny ? 'Yes' : 'No'}\n`;
+                    
+                    if (winDetails.pokemon === 'Eternatus') {
+                        messageContent += `**Special:** 🌟 ULTIMATE PRIZE! 🌟\n`;
+                    }
+                }
+                
+                messageContent += `**Time:** ${new Date().toLocaleString()}`;
+
+                // Create the webhook payload
+                const payload = {
+                    username: "Cobblemon Wheel Bot",
+                    avatar_url: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                    content: messageContent,
+                    embeds: [
+                        {
+                            title: "🎡 Lucky Wheel Result",
+                            color: winDetails.shiny || winDetails.isPokemon ? 0xFFD700 : 0x5865F2,
+                            timestamp: new Date().toISOString(),
+                            footer: {
+                                text: "Cobblemon Lucky Wheel System"
+                            }
+                        }
+                    ]
+                };
+
+                // Send to Discord webhook
+                const response = await fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    console.error('Failed to send to Discord webhook:', response.status);
+                }
+            } catch (error) {
+                console.error('Error sending to Discord webhook:', error);
+                // Don't alert the user - just log it silently
+            }
+        }
 
         // Load saved login from localStorage
         function loadSavedLogin() {
@@ -1477,27 +1551,33 @@
                     if (!hourlyWins[selectedPlayer]) hourlyWins[selectedPlayer] = [];
                     
                     // Check if it's a Pokemon or Minecraft item
+                    let winDetails;
                     if (winningItemData.isPokemon) { // Pokemon
-                        hourlyWins[selectedPlayer].push({
+                        winDetails = {
                             pokemon: winningItemData.name,
                             id: winningItemData.id,
                             isPokemon: true,
                             isShiny: true,
                             level: 1,
                             timestamp: new Date().toISOString()
-                        });
+                        };
+                        hourlyWins[selectedPlayer].push(winDetails);
                     } else { // Minecraft item
-                        hourlyWins[selectedPlayer].push({
+                        winDetails = {
                             item: winningItemData.name,
                             id: winningItemData.id,
                             count: winningItemData.count,
                             type: winningItemData.type,
                             isPokemon: false,
                             timestamp: new Date().toISOString()
-                        });
+                        };
+                        hourlyWins[selectedPlayer].push(winDetails);
                     }
                     
                     localStorage.setItem('hourly_wins_history', JSON.stringify(hourlyWins));
+                    
+                    // Send to Discord webhook
+                    sendToDiscordWebhook(selectedPlayer, winDetails, 'hourly');
                     
                     // Show result with the actual item that landed
                     showResult(winningItemData, winningItemData.isPokemon); // Hourly Pokemon are always shiny
@@ -1506,7 +1586,7 @@
                     const winsHistory = JSON.parse(localStorage.getItem('wheel_wins_history') || '{}');
                     if (!winsHistory[selectedPlayer]) winsHistory[selectedPlayer] = [];
                     
-                    winsHistory[selectedPlayer].push({
+                    const winDetails = {
                         pokemon: winningItemData.pokemon.name,
                         id: winningItemData.pokemon.id,
                         shiny: winningItemData.isShiny,
@@ -1514,9 +1594,14 @@
                         type: currentWheel,
                         rarity: winningItemData.rarity,
                         timestamp: new Date().toISOString()
-                    });
+                    };
+                    
+                    winsHistory[selectedPlayer].push(winDetails);
                     
                     localStorage.setItem('wheel_wins_history', JSON.stringify(winsHistory));
+                    
+                    // Send to Discord webhook
+                    sendToDiscordWebhook(selectedPlayer, winDetails, currentWheel);
                     
                     // Show result with the actual item that landed
                     showResult(winningItemData.pokemon, winningItemData.isShiny, winningItemData.level);
