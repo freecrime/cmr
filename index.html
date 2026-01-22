@@ -723,6 +723,234 @@
             display: block;
         }
 
+        /* IV Roulette Styles */
+        .iv-roulette-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #1a1f2e 0%, #2d3748 100%);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.8);
+            z-index: 1001;
+            min-width: 400px;
+            max-width: 500px;
+            width: 90%;
+            border: 2px solid #4cc9f0;
+        }
+
+        .iv-roulette-popup.show {
+            display: block;
+            animation: popupAppear 0.5s ease;
+        }
+
+        .iv-roulette-popup h2 {
+            color: #4cc9f0;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-align: center;
+        }
+
+        .iv-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-label {
+            color: #98c1d9;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .form-input {
+            padding: 12px;
+            border: 2px solid #3d5a80;
+            border-radius: 10px;
+            font-size: 1em;
+            background: #0f1419;
+            color: #98c1d9;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4cc9f0;
+            box-shadow: 0 0 10px rgba(76, 201, 240, 0.3);
+        }
+
+        .form-select {
+            padding: 12px;
+            border: 2px solid #3d5a80;
+            border-radius: 10px;
+            font-size: 1em;
+            background: #0f1419;
+            color: #98c1d9;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #4cc9f0;
+            box-shadow: 0 0 10px rgba(76, 201, 240, 0.3);
+        }
+
+        .shiny-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            border: 2px solid #3d5a80;
+            border-radius: 10px;
+            background: #0f1419;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .shiny-toggle:hover {
+            border-color: #4cc9f0;
+        }
+
+        .shiny-toggle.active {
+            background: linear-gradient(135deg, rgba(255, 214, 10, 0.2) 0%, rgba(255, 183, 3, 0.2) 100%);
+            border-color: #ffd60a;
+        }
+
+        .shiny-indicator {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #3d5a80;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .shiny-toggle.active .shiny-indicator {
+            background: #ffd60a;
+            box-shadow: 0 0 10px rgba(255, 214, 10, 0.5);
+        }
+
+        .shiny-indicator::before {
+            content: '✨';
+            font-size: 12px;
+        }
+
+        .iv-info {
+            background: rgba(76, 201, 240, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #4cc9f0;
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin-top: 10px;
+        }
+
+        .iv-info h4 {
+            color: #4cc9f0;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .submit-iv-button {
+            flex: 1;
+            padding: 15px;
+            background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-iv-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(76, 201, 240, 0.4);
+        }
+
+        .submit-iv-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .close-iv-button {
+            flex: 1;
+            padding: 15px;
+            background: #2d3748;
+            color: #98c1d9;
+            border: 2px solid #3d5a80;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close-iv-button:hover {
+            background: #3d5a80;
+            color: white;
+        }
+
+        .iv-submission-success {
+            background: linear-gradient(135deg, rgba(76, 201, 240, 0.2) 0%, rgba(67, 97, 238, 0.2) 100%);
+            border: 2px solid #4cc9f0;
+            color: #98c1d9;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .iv-submission-success.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .iv-roulette-button {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            align-self: center;
+            margin-top: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .iv-roulette-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(76, 201, 240, 0.4);
+        }
+
         @media (max-width: 1200px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -752,6 +980,15 @@
                 min-width: 300px;
                 padding: 20px;
             }
+            
+            .iv-roulette-popup {
+                min-width: 300px;
+                padding: 20px;
+            }
+            
+            .form-buttons {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -759,7 +996,7 @@
     <div class="container">
         <div class="header">
             <h1>Cobblemon Lucky Wheel</h1>
-            <p>Trade for a Token and spin!</p>
+            <p>Trade for a Token and spin! • Submit Pokémon for IV Roulette!</p>
         </div>
 
         <div class="main-content">
@@ -781,6 +1018,9 @@
                 </div>
 
                 <button class="spin-button" id="spinButton" onclick="spin()">Spin the Wheel!</button>
+                
+                <!-- New IV Roulette Button -->
+                <button class="iv-roulette-button" onclick="openIVRoulette()">🎲 IV Roulette 🎲</button>
             </div>
 
             <div class="sidebar">
@@ -830,6 +1070,8 @@
     </div>
 
     <div class="overlay" id="overlay"></div>
+    
+    <!-- Result Popup for Wheel Spins -->
     <div class="result-popup" id="resultPopup">
         <h2 id="resultTitle">Congratulations! 🎉</h2>
         <div class="discord-notice">
@@ -847,10 +1089,61 @@
         </div>
         <button class="close-popup" onclick="closePopup()">Close</button>
     </div>
+    
+    <!-- IV Roulette Popup -->
+    <div class="iv-roulette-popup" id="ivRoulettePopup">
+        <h2>🎲 IV Roulette Submission 🎲</h2>
+        <p style="color: #98c1d9; text-align: center; margin-bottom: 20px; font-size: 0.95em;">
+            Submit your Pokémon to have its IVs perfected! Winners selected daily via Discord livestream.
+        </p>
+        
+        <div class="iv-form" id="ivForm">
+            <div class="form-group">
+                <label class="form-label" for="pokemonSpecies">Pokémon Species *</label>
+                <input type="text" class="form-input" id="pokemonSpecies" placeholder="e.g., Charizard, Pikachu" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="pokemonNickname">Nickname (if any)</label>
+                <input type="text" class="form-input" id="pokemonNickname" placeholder="Optional nickname">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="pokemonLevel">Current Level *</label>
+                <input type="number" class="form-input" id="pokemonLevel" placeholder="e.g., 50" min="1" max="100" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Is it Shiny? *</label>
+                <div class="shiny-toggle" id="shinyToggle" onclick="toggleShiny()">
+                    <span style="color: #98c1d9;">Shiny Status</span>
+                    <div class="shiny-indicator"></div>
+                </div>
+            </div>
+            
+            <div class="iv-info">
+                <h4>📋 How it works:</h4>
+                <p>• Submit your Pokémon to have its IVs perfected to 31 in all stats</p>
+                <p>• Submissions are cleared daily</p>
+                <p>• Winners selected every evening via Discord livestream</p>
+                <p>• You must be logged in to submit</p>
+            </div>
+            
+            <div class="iv-submission-success" id="ivSubmissionSuccess">
+                ✅ Submission successful! Check Discord for the daily livestream.
+            </div>
+            
+            <div class="form-buttons">
+                <button class="submit-iv-button" id="submitIVButton" onclick="submitIVRoulette()">Submit for IV Roulette</button>
+                <button class="close-iv-button" onclick="closeIVRoulette()">Close</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // Discord Webhook URL
+        // Discord Webhook URLs
         const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1463207027861094585/Fc8lWs42Z6VO3IE0j3iFqzGARohCidnKihDAWU33bqt42rfggEFHJmlJ9NEvjM-7DsSp';
+        const DISCORD_IV_WEBHOOK_URL = 'https://discord.com/api/webhooks/1463926867185631245/22CqHhqbdfmIEVnFUXZgCXn2Bi6ut5o9MPCiUBS3caKC4w3IMm2a3hrbcqx3ov5jcFtK';
 
         // Hourly Spin Items (with proper Pokéball sprites)
         const hourlyItems = [
@@ -988,12 +1281,161 @@
         let tokenData = {};
         let userAccounts = {}; // Stores username:password pairs
         let selectedPlayer = '';
+        let isShinyIV = false; // For IV Roulette
+        
         const SHINY_CHANCE = 0.01;
         const SHINY_ONLY_CHANCE = 0.10; // 10% chance for shiny-only Pokemon in normal wheel
         const MASTERBALL_CHANCE = 0.01; // Same as Nether Star rarity
         const RARE_SHINY_CHANCE = 0.03; // 3% chance for rare shiny starters in hourly
         const SPECIAL_SHINY_CHANCE = 0.05; // 5% chance for shiny in special wheel
         let rouletteItems = [];
+
+        // Function to open IV Roulette popup
+        function openIVRoulette() {
+            if (!selectedPlayer) {
+                alert('Please login first to submit Pokémon for IV Roulette!');
+                return;
+            }
+            
+            document.getElementById('ivRoulettePopup').classList.add('show');
+            document.getElementById('overlay').classList.add('show');
+        }
+
+        // Function to close IV Roulette popup
+        function closeIVRoulette() {
+            document.getElementById('ivRoulettePopup').classList.remove('show');
+            document.getElementById('overlay').classList.remove('show');
+            resetIVForm();
+        }
+
+        // Function to toggle shiny status in IV form
+        function toggleShiny() {
+            const toggle = document.getElementById('shinyToggle');
+            isShinyIV = !isShinyIV;
+            toggle.classList.toggle('active', isShinyIV);
+        }
+
+        // Function to reset IV form
+        function resetIVForm() {
+            document.getElementById('pokemonSpecies').value = '';
+            document.getElementById('pokemonNickname').value = '';
+            document.getElementById('pokemonLevel').value = '';
+            isShinyIV = false;
+            document.getElementById('shinyToggle').classList.remove('active');
+            document.getElementById('ivSubmissionSuccess').classList.remove('show');
+        }
+
+        // Function to submit IV Roulette
+        async function submitIVRoulette() {
+            const species = document.getElementById('pokemonSpecies').value.trim();
+            const nickname = document.getElementById('pokemonNickname').value.trim();
+            const level = document.getElementById('pokemonLevel').value.trim();
+            
+            // Validate inputs
+            if (!species || !level) {
+                alert('Please fill in all required fields (Species and Level)!');
+                return;
+            }
+            
+            const levelNum = parseInt(level);
+            if (isNaN(levelNum) || levelNum < 1 || levelNum > 100) {
+                alert('Please enter a valid level between 1 and 100!');
+                return;
+            }
+            
+            // Disable button to prevent double submission
+            const submitButton = document.getElementById('submitIVButton');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+            
+            try {
+                // Send to Discord webhook
+                await sendIVToDiscordWebhook(species, nickname, levelNum, isShinyIV);
+                
+                // Show success message
+                const successMessage = document.getElementById('ivSubmissionSuccess');
+                successMessage.classList.add('show');
+                
+                // Reset form after delay
+                setTimeout(() => {
+                    closeIVRoulette();
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error submitting IV Roulette:', error);
+                alert('Failed to submit. Please try again!');
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit for IV Roulette';
+            }
+        }
+
+        // Function to send IV Roulette submission to Discord webhook
+        async function sendIVToDiscordWebhook(species, nickname, level, isShiny) {
+            const inGameName = getInGamePlayerName(selectedPlayer);
+            
+            // Format the message
+            let messageContent = `🎲 **NEW IV ROULETTE SUBMISSION!** 🎲\n`;
+            messageContent += `**Player (Website):** ${selectedPlayer}\n`;
+            messageContent += `**Player (In-Game):** ${inGameName}\n`;
+            messageContent += `**Pokémon Species:** ${species}\n`;
+            
+            if (nickname) {
+                messageContent += `**Nickname:** ${nickname}\n`;
+            }
+            
+            messageContent += `**Current Level:** ${level}\n`;
+            messageContent += `**Shiny:** ${isShiny ? 'Yes ✨' : 'No'}\n`;
+            messageContent += `**Prize:** IVs perfected to 31 in all stats\n`;
+            messageContent += `\n**Submission Time:** ${new Date().toLocaleString()}`;
+            messageContent += `\n\n*Submissions cleared daily. Winners selected via Discord livestream.*`;
+
+            // Create the webhook payload
+            const payload = {
+                username: "Cobblemon IV Roulette Bot",
+                avatar_url: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/493.png", // Arceus sprite
+                content: messageContent,
+                embeds: [
+                    {
+                        title: "🎲 IV Roulette Entry",
+                        color: isShiny ? 0xFFD700 : 0x4CC9F0,
+                        timestamp: new Date().toISOString(),
+                        footer: {
+                            text: "Cobblemon IV Roulette System - Daily Draw"
+                        },
+                        fields: [
+                            {
+                                name: "Player",
+                                value: `${selectedPlayer} (${inGameName})`,
+                                inline: true
+                            },
+                            {
+                                name: "Level",
+                                value: level.toString(),
+                                inline: true
+                            },
+                            {
+                                name: "Shiny",
+                                value: isShiny ? "✨ Yes" : "No",
+                                inline: true
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            // Send to Discord webhook
+            const response = await fetch(DISCORD_IV_WEBHOOK_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Discord webhook error: ${response.status}`);
+            }
+        }
 
         // Function to get in-game player name (mapping website name to in-game name)
         function getInGamePlayerName(websiteName) {
