@@ -1271,15 +1271,22 @@
             { name: 'Mewtwo (Shadow)', id: 150, shiny: true, rarity: 'ultra_rare', form: 'mewtwo shadow', level: 100, special: true }, // Always shiny
             { name: 'Mewtwo (Armored)', id: 150, shiny: true, rarity: 'ultra_rare', form: 'mewtwo armored', level: 100, special: true }, // Always shiny
             { name: 'Lugia (Shadow)', id: 249, shiny: true, rarity: 'ultra_rare', form: 'lugia shadow', level: 100, special: true }, // Always shiny
+            
+            // Updated Necrozma forms (now always shiny)
+            { name: 'Necrozma (Dawn)', id: 800, shiny: true, rarity: 'ultra_rare', form: 'necrozma prism_fusion=dawn', level: 100, special: true }, // Always shiny
+            { name: 'Necrozma (Dusk)', id: 800, shiny: true, rarity: 'ultra_rare', form: 'necrozma prism_fusion=dusk', level: 100, special: true }, // Always shiny
+            
+            // New additions
+            { name: 'Gholdengo (Netherite)', id: 1000, shiny: false, rarity: 'ultra_rare', form: 'gholdengo netherite_coating=full', level: 100, special: true },
+            { name: 'Marshadow', id: 802, shiny: true, rarity: 'ultra_rare', form: 'marshadow shiny', level: 100, special: true }, // Always shiny
+            { name: 'Ogerpon (Perfect IV)', id: 1017, shiny: false, rarity: 'ultra_rare', form: 'ogerpon hp_iv=31 attack_iv=31 defence_iv=31 special_attack_iv=31 special_defence_iv=31 speed_iv=31', level: 100, special: true },
+            
             { name: 'Floette (Eternal)', id: 670, shiny: false, rarity: 'ultra_rare', form: 'floette flower=eternal', level: 100, special: true },
             { name: 'Kingambit', id: 983, shiny: false, rarity: 'ultra_rare', form: 'kingambit', level: 100, special: true },
             { name: 'Hoopa (Unbound)', id: 720, shiny: false, rarity: 'ultra_rare', form: 'hoopa', level: 100, special: true, extraItem: 'totem_of_undying' },
-            // New ultra rare additions
             { name: 'White Kyurem', id: 646, shiny: false, rarity: 'ultra_rare', form: 'kyurem absofusion=white', level: 100, special: true },
             { name: 'Black Kyurem', id: 646, shiny: false, rarity: 'ultra_rare', form: 'kyurem absofusion=black', level: 100, special: true },
             { name: 'Arceus', id: 493, shiny: false, rarity: 'ultra_rare', form: 'arceus', level: 100, special: true },
-            { name: 'Necrozma (Dawn)', id: 800, shiny: false, rarity: 'ultra_rare', form: 'necrozma prism_fusion=dawn', level: 100, special: true },
-            { name: 'Necrozma (Dusk)', id: 800, shiny: false, rarity: 'ultra_rare', form: 'necrozma prism_fusion=dusk', level: 100, special: true },
             { name: 'Red\'s Charizard', id: 6, shiny: false, rarity: 'ultra_rare', form: 'charizard', level: 100, special: true },
             { name: 'Ursaluna (Bloodmoon)', id: 901, shiny: false, rarity: 'ultra_rare', form: 'ursaluna bloodmoon=true', level: 100, special: true }
         ];
@@ -1827,12 +1834,13 @@
                     
                     // Determine if shiny for ultra rare Pokemon
                     let isShiny = false;
-                    if (item.rarity === 'ultra_rare' && Math.random() < SPECIAL_SHINY_CHANCE) {
-                        isShiny = true;
-                    }
                     
-                    // Special cases: Mewtwo Shadow, Mewtwo Armored, and Lugia Shadow are always shiny
-                    if (item.name === 'Mewtwo (Shadow)' || item.name === 'Mewtwo (Armored)' || item.name === 'Lugia (Shadow)') {
+                    // Special cases that are always shiny
+                    if (item.name === 'Mewtwo (Shadow)' || item.name === 'Mewtwo (Armored)' || 
+                        item.name === 'Lugia (Shadow)' || item.name === 'Necrozma (Dawn)' || 
+                        item.name === 'Necrozma (Dusk)' || item.name === 'Marshadow') {
+                        isShiny = true;
+                    } else if (item.rarity === 'ultra_rare' && Math.random() < SPECIAL_SHINY_CHANCE) {
                         isShiny = true;
                     }
                     
@@ -1986,9 +1994,12 @@
                     
                     if (item.id <= 1000 || item.special) {
                         // It's a Pokemon
+                        const isAlwaysShiny = item.name === 'Mewtwo (Shadow)' || item.name === 'Mewtwo (Armored)' || 
+                                             item.name === 'Lugia (Shadow)' || item.name === 'Necrozma (Dawn)' || 
+                                             item.name === 'Necrozma (Dusk)' || item.name === 'Marshadow';
                         listItem.innerHTML = `
-                            <img class="pokemon-sprite" src="${getSprite(item.id, false)}" alt="${item.name}">
-                            <span>${item.name} (Lvl ${item.level || 100})${item.rarity === 'ultra_rare' ? ' 🌟' : ''}</span>
+                            <img class="pokemon-sprite" src="${getSprite(item.id, isAlwaysShiny)}" alt="${item.name}">
+                            <span>${item.name} (Lvl ${item.level || 100})${isAlwaysShiny ? ' ✨' : ''}${item.rarity === 'ultra_rare' ? ' 🌟' : ''}</span>
                         `;
                     } else {
                         // It's an item
